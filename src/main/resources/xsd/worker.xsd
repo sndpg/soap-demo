@@ -1,0 +1,14 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schema.soapdemo.soap.psc.org" elementFormDefault="qualified">
+
+    <xs:element name="getStatusRequest">
+    </xs:element>
+
+    <xs:element name="getStatusResponse">
+        <xs:complexType>
+            <xs:sequence minOccurs="1" maxOccurs="1">
+                <xs:element name="status" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

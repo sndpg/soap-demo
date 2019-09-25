@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://schema.soapdemo.soap.psc.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ax21="http://schema.soapdemo.soap.psc.org/xsd" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" targetNamespace="http://schema.soapdemo.soap.psc.org">
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schema.soapdemo.soap.psc.org/xsd">
+            <xs:complexType name="GetStatusResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax22="http://schema.soapdemo.soap.psc.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schema.soapdemo.soap.psc.org">
+            <xs:import namespace="http://schema.soapdemo.soap.psc.org/xsd"/>
+            <xs:element name="postConstruct">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getStatusRequest">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getStatusResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax22:GetStatusResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="postConstructRequest">
+        <wsdl:part name="parameters" element="ns:postConstruct"/>
+    </wsdl:message>
+    <wsdl:message name="getStatusRequest">
+        <wsdl:part name="parameters" element="ns:getStatusRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getStatusResponse">
+        <wsdl:part name="parameters" element="ns:getStatusResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="WorkerEndpointPortType">
+        <wsdl:operation name="postConstruct">
+            <wsdl:input message="ns:postConstructRequest" wsaw:Action="urn:postConstruct"/>
+        </wsdl:operation>
+        <wsdl:operation name="getStatus">
+            <wsdl:input message="ns:getStatusRequest" wsaw:Action="urn:getStatus"/>
+            <wsdl:output message="ns:getStatusResponse" wsaw:Action="urn:getStatusResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="WorkerEndpointSoap11Binding" type="ns:WorkerEndpointPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="postConstruct">
+            <soap:operation soapAction="urn:postConstruct" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="getStatus">
+            <soap:operation soapAction="urn:getStatus" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="WorkerEndpointSoap12Binding" type="ns:WorkerEndpointPortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="postConstruct">
+            <soap12:operation soapAction="urn:postConstruct" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="getStatus">
+            <soap12:operation soapAction="urn:getStatus" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="WorkerEndpointHttpBinding" type="ns:WorkerEndpointPortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="postConstruct">
+            <http:operation location="postConstruct"/>
+            <wsdl:input>
+                <mime:content type="application/xml" part="parameters"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="getStatus">
+            <http:operation location="getStatus"/>
+            <wsdl:input>
+                <mime:content type="application/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="application/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="WorkerEndpoint">
+        <wsdl:port name="WorkerEndpointHttpSoap11Endpoint" binding="ns:WorkerEndpointSoap11Binding">
+            <soap:address location="http://localhost:8080/axis2/services/WorkerEndpoint"/>
+        </wsdl:port>
+        <wsdl:port name="WorkerEndpointHttpSoap12Endpoint" binding="ns:WorkerEndpointSoap12Binding">
+            <soap12:address location="http://localhost:8080/axis2/services/WorkerEndpoint"/>
+        </wsdl:port>
+        <wsdl:port name="WorkerEndpointHttpEndpoint" binding="ns:WorkerEndpointHttpBinding">
+            <http:address location="http://localhost:8080/axis2/services/WorkerEndpoint"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
