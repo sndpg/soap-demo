@@ -1,27 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://schema.soapdemo.soap.psc.org"
-                  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ax21="http://schema.soapdemo.soap.psc.org/xsd"
-                  xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
                   xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
                   xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+                  xmlns:wsp="http://www.w3.org/ns/ws-policy/"
+                  xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
                   targetNamespace="http://schema.soapdemo.soap.psc.org">
+    <wsp:Policy>
+        <sp:SupportingTokens>
+            <wsp:Policy>
+                <sp:UsernameToken
+                        sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"/>
+            </wsp:Policy>
+        </sp:SupportingTokens>
+    </wsp:Policy>
     <wsdl:types>
+        <wsp:Policy>
+            <sp:SupportingTokens>
+                <wsp:Policy>
+                    <sp:UsernameToken
+                            sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"/>
+                </wsp:Policy>
+            </sp:SupportingTokens>
+        </wsp:Policy>
         <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified"
                    targetNamespace="http://schema.soapdemo.soap.psc.org/xsd">
+            <xs:import namespace="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/v1.3/cd/ws-securitypolicy.xsd"
+                       schemaLocation="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/v1.3/cd/ws-securitypolicy.xsd"/>
             <xs:import namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
-                        schemaLocation="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"/>
+                       schemaLocation="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"/>
             <xs:import namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
-                        schemaLocation="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"/>
+                       schemaLocation="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"/>
             <xs:import namespace="http://www.sircon.com/WebServices/services/OnboardingServices.xsd"
-                        schemaLocation="https://px.sircon.com/webservice/OnboardingServices.xsd"/>
+                       schemaLocation="https://px.sircon.com/webservice/OnboardingServices.xsd"/>
             <xs:element name="Security" type="wsse:SecurityHeaderType"/>
             <xs:complexType name="GetStatusResponse">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
                 </xs:sequence>
             </xs:complexType>
-
+            <wsp:Policy>
+                <sp:SupportingTokens>
+                    <wsp:Policy>
+                        <sp:UsernameToken
+                                sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"/>
+                    </wsp:Policy>
+                </sp:SupportingTokens>
+            </wsp:Policy>
         </xs:schema>
         <xs:schema xmlns:ax22="http://schema.soapdemo.soap.psc.org/xsd" attributeFormDefault="qualified"
                    elementFormDefault="qualified" targetNamespace="http://schema.soapdemo.soap.psc.org">

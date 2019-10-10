@@ -1,6 +1,8 @@
 package org.psc.soap.soapdemo.configuration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.wss4j.common.WSS4JConstants;
+import org.apache.wss4j.common.ext.WSPasswordCallback;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -12,12 +14,20 @@ import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
+import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
+import org.springframework.ws.soap.security.wss4j2.callback.SimplePasswordValidationCallbackHandler;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
 
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @EnableWs
@@ -30,6 +40,7 @@ public class WebServiceConfiguration extends WsConfigurerAdapter {
 
     @Override
     public void addInterceptors(List<EndpointInterceptor> interceptors) {
+        interceptors.add(wss4jSecurityInterceptor());
         interceptors.add(endpointInterceptor());
         log.info("n");
     }
@@ -67,6 +78,18 @@ public class WebServiceConfiguration extends WsConfigurerAdapter {
 
 
     @Bean
+    public Wss4jSecurityInterceptor wss4jSecurityInterceptor() {
+        Wss4jSecurityInterceptor wss4jSecurityInterceptor = new Wss4jSecurityInterceptor();
+        wss4jSecurityInterceptor.setValidationActions(WSS4JConstants.USERNAME_TOKEN_LN);
+        Map<String, String> users = Collections.singletonMap("test", "password123");
+        SimplePasswordValidationCallbackHandler simplePasswordValidationCallbackHandler =
+                new SimplePasswordValidationCallbackHandler();
+        simplePasswordValidationCallbackHandler.setUsersMap(users);
+        wss4jSecurityInterceptor.setValidationCallbackHandler(new UnsafeUsernameTokenCallbackHandler());
+        return wss4jSecurityInterceptor;
+    }
+
+    @Bean
     public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
         servlet.setApplicationContext(applicationContext);
@@ -89,4 +112,17 @@ public class WebServiceConfiguration extends WsConfigurerAdapter {
         return new SimpleXsdSchema(new ClassPathResource("xsd/worker.xsd"));
     }
 
+    private static class UnsafeUsernameTokenCallbackHandler implements CallbackHandler{
+
+        @Override
+        public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+            for(Callback callback: callbacks){
+                if (callback instanceof WSPasswordCallback){
+                    WSPasswordCallback wsPasswordCallback = (WSPasswordCallback) callback;
+                    wsPasswordCallback.setPassword("password123");
+                }
+            }
+
+        }
+    }
 }
