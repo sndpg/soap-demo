@@ -3,6 +3,7 @@ package org.psc.soap.soapdemo.configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.ext.WSPasswordCallback;
+import org.apache.wss4j.dom.handler.WSHandlerConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -13,9 +14,13 @@ import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.server.EndpointInterceptor;
+import org.springframework.ws.soap.SoapElement;
+import org.springframework.ws.soap.SoapHeader;
+import org.springframework.ws.soap.SoapHeaderElement;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 import org.springframework.ws.soap.security.wss4j2.callback.SimplePasswordValidationCallbackHandler;
+import org.springframework.ws.soap.security.xwss.callback.SimpleUsernamePasswordCallbackHandler;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
@@ -80,7 +85,7 @@ public class WebServiceConfiguration extends WsConfigurerAdapter {
     @Bean
     public Wss4jSecurityInterceptor wss4jSecurityInterceptor() {
         Wss4jSecurityInterceptor wss4jSecurityInterceptor = new Wss4jSecurityInterceptor();
-        wss4jSecurityInterceptor.setValidationActions(WSS4JConstants.USERNAME_TOKEN_LN);
+        wss4jSecurityInterceptor.setValidationActions(WSHandlerConstants.NO_SECURITY);
         Map<String, String> users = Collections.singletonMap("test", "password123");
         SimplePasswordValidationCallbackHandler simplePasswordValidationCallbackHandler =
                 new SimplePasswordValidationCallbackHandler();
@@ -119,7 +124,7 @@ public class WebServiceConfiguration extends WsConfigurerAdapter {
             for(Callback callback: callbacks){
                 if (callback instanceof WSPasswordCallback){
                     WSPasswordCallback wsPasswordCallback = (WSPasswordCallback) callback;
-                    wsPasswordCallback.setPassword("password123");
+                    wsPasswordCallback.setPassword("");
                 }
             }
 
