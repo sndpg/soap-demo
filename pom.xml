@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.8.RELEASE</version>
+        <version>2.2.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.psc.soap</groupId>
@@ -22,6 +22,20 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hibernate-validator</artifactId>
+                    <groupId>org.hibernate.validator</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>spring-boot-starter-validation</artifactId>
+                    <groupId>org.springframework.boot</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jakarta.validation-api</artifactId>
+                    <groupId>jakarta.validation</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>wsdl4j</groupId>
@@ -51,10 +65,33 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.cxf</groupId>-->
+<!--                <artifactId>cxf-xjc-plugin</artifactId>-->
+<!--                <version>3.2.3</version>-->
+<!--                <configuration>-->
+<!--                    <extensions>-->
+<!--                        <extension>org.apache.cxf.xjcplugins:cxf-xjc-dv:3.2.3</extension>-->
+<!--                    </extensions>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>generate-sources</id>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>xsdtojava</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>-->
+<!--                            <xsdOptions>-->
+<!--                                <xsdOption>-->
+<!--                                    <xsd>${basedir}/src/main/resources/service.wsdl</xsd>-->
+<!--                                </xsdOption>-->
+<!--                            </xsdOptions>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>

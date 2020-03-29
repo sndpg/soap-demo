@@ -6,13 +6,13 @@
                   xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
                   xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
                   xmlns:wsp="http://www.w3.org/ns/ws-policy/"
-                  xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+                  xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802"
                   targetNamespace="http://schema.soapdemo.soap.psc.org">
     <wsp:Policy>
         <sp:SupportingTokens>
             <wsp:Policy>
                 <sp:UsernameToken
-                        sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"/>
+                        sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802/IncludeToken/AlwaysToRecipient"/>
             </wsp:Policy>
         </sp:SupportingTokens>
     </wsp:Policy>
@@ -21,7 +21,7 @@
             <sp:SupportingTokens>
                 <wsp:Policy>
                     <sp:UsernameToken
-                            sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"/>
+                            sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802/IncludeToken/AlwaysToRecipient"/>
                 </wsp:Policy>
             </sp:SupportingTokens>
         </wsp:Policy>

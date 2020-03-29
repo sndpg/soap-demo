@@ -1,8 +1,21 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:psc="http://schema.soapdemo.soap.psc.org"
            targetNamespace="http://schema.soapdemo.soap.psc.org" elementFormDefault="qualified">
 
-    <xs:element name="getStatusRequest">
-    </xs:element>
+    <xs:complexType name="keyValue">
+        <xs:sequence>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="getStatusRequest">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="keyValue" type="psc:keyValue"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="getStatusRequest" type="psc:getStatusRequest" />
 
     <xs:element name="getStatusResponse">
         <xs:complexType>
