@@ -6,6 +6,7 @@ import org.psc.soap.soapdemo.schema.GetStatusRequest;
 import org.psc.soap.soapdemo.schema.GetStatusResponse;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import javax.annotation.PostConstruct;
@@ -21,8 +22,11 @@ public class WorkerEndpoint {
 
     @ResponsePayload
     @PayloadRoot(namespace = WebServiceConfiguration.TARGET_NAMESPACE, localPart = "getStatusRequest")
-    public GetStatusResponse getStatus(GetStatusRequest request) {
+    public GetStatusResponse getStatus(@RequestPayload GetStatusRequest request) {
         log.info("getStatus called");
+        if (request != null) {
+            request.getKeyValue().forEach(keyValue -> log.info("{}: {}", keyValue.getKey(), keyValue.getValue()));
+        }
         GetStatusResponse getStatusResponse = new GetStatusResponse();
         getStatusResponse.setStatus("OK");
         return getStatusResponse;

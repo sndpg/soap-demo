@@ -1,7 +1,6 @@
 package org.psc.soap.soapdemo.configuration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 import org.apache.wss4j.dom.handler.WSHandlerConstants;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,13 +13,9 @@ import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.server.EndpointInterceptor;
-import org.springframework.ws.soap.SoapElement;
-import org.springframework.ws.soap.SoapHeader;
-import org.springframework.ws.soap.SoapHeaderElement;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 import org.springframework.ws.soap.security.wss4j2.callback.SimplePasswordValidationCallbackHandler;
-import org.springframework.ws.soap.security.xwss.callback.SimpleUsernamePasswordCallbackHandler;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
@@ -28,11 +23,12 @@ import org.springframework.xml.xsd.XsdSchema;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @EnableWs
@@ -56,10 +52,10 @@ public class WebServiceConfiguration extends WsConfigurerAdapter {
         return new EndpointInterceptor() {
             @Override
             public boolean handleRequest(MessageContext messageContext, Object endpoint) throws Exception {
-                messageContext.getRequest().getPayloadResult();
-                messageContext.getProperty("Username");
+                //                messageContext.getRequest().getPayloadResult();
+                //                messageContext.getProperty("Username");
                 SaajSoapMessage soapMessage = (SaajSoapMessage) messageContext.getRequest();
-                log.info("debug");
+                //                log.info("debug");
                 return true;
             }
 
@@ -85,12 +81,19 @@ public class WebServiceConfiguration extends WsConfigurerAdapter {
     @Bean
     public Wss4jSecurityInterceptor wss4jSecurityInterceptor() {
         Wss4jSecurityInterceptor wss4jSecurityInterceptor = new Wss4jSecurityInterceptor();
-        wss4jSecurityInterceptor.setValidationActions(WSHandlerConstants.NO_SECURITY);
-        Map<String, String> users = Collections.singletonMap("test", "password123");
+        wss4jSecurityInterceptor.setValidationActions(WSHandlerConstants.USERNAME_TOKEN);
+        Map<String, String> users = new ConcurrentHashMap<String, String>() {{
+            put("test", "password123");
+            put("defaultUser", "password123");
+            put("test2", "password123");
+        }};
         SimplePasswordValidationCallbackHandler simplePasswordValidationCallbackHandler =
                 new SimplePasswordValidationCallbackHandler();
         simplePasswordValidationCallbackHandler.setUsersMap(users);
-        wss4jSecurityInterceptor.setValidationCallbackHandler(new UnsafeUsernameTokenCallbackHandler());
+        // for testing
+        //wss4jSecurityInterceptor.setValidationCallbackHandler(new UnsafeUsernameTokenCallbackHandler());
+        wss4jSecurityInterceptor.setValidationCallbackHandlers(
+                new CallbackHandler[]{simplePasswordValidationCallbackHandler, new UsernameLoggingCallbackHandler()});
         return wss4jSecurityInterceptor;
     }
 
@@ -117,14 +120,28 @@ public class WebServiceConfiguration extends WsConfigurerAdapter {
         return new SimpleXsdSchema(new ClassPathResource("xsd/worker.xsd"));
     }
 
-    private static class UnsafeUsernameTokenCallbackHandler implements CallbackHandler{
+    private static class UnsafeUsernameTokenCallbackHandler implements CallbackHandler {
 
         @Override
         public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-            for(Callback callback: callbacks){
-                if (callback instanceof WSPasswordCallback){
+            for (Callback callback : callbacks) {
+                if (callback instanceof WSPasswordCallback) {
                     WSPasswordCallback wsPasswordCallback = (WSPasswordCallback) callback;
                     wsPasswordCallback.setPassword("");
+                }
+            }
+
+        }
+    }
+
+    private static class UsernameLoggingCallbackHandler implements CallbackHandler {
+
+        @Override
+        public void handle(Callback[] callbacks) {
+            for (Callback callback : callbacks) {
+                if (callback instanceof WSPasswordCallback) {
+                    WSPasswordCallback wsPasswordCallback = (WSPasswordCallback) callback;
+                    log.info("username: {}", wsPasswordCallback.getIdentifier());
                 }
             }
 
